@@ -1,14 +1,24 @@
 package ch.tutteli.atrium.assertions.builders
 
+
+import ch.tutteli.atrium.api.cc.infix.en_GB.toBe
 import ch.tutteli.atrium.assertions.Assertion
 import ch.tutteli.atrium.core.falseProvider
 import ch.tutteli.atrium.creating.Expect
 import ch.tutteli.atrium.domain.builders.ExpectImpl
 import ch.tutteli.atrium.specs.SubjectLessSpec
 import ch.tutteli.atrium.specs.expectLambda
+import ch.tutteli.atrium.verbs.internal.assert
 import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class DescriptiveWithBasedOnSubjectSpec : Spek({
+
+    describe("bla") {
+        it("asdf") {
+            assert(1) toBe 2
+        }
+    }
 
     fun addDescriptive(f: (Expect<Int>, Descriptive.HoldsOption) -> Assertion) = expectLambda<Int> {
         addAssertion(f(this, ExpectImpl.builder.descriptive))
