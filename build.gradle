@@ -199,16 +199,16 @@ configure(jsProjects) { subProject ->
     }
 }
 
+def scalaProjects = subprojects.findAll{ it.name.endsWith("-scala") }
 def nonCommonAndJsProjects = subprojects - commonProjects - jsProjects
-configure(nonCommonAndJsProjects - toolProjects) {
+def nonCommonJsAndScalaProjects = nonCommonAndJsProjects - scalaProjects
+configure(nonCommonJsAndScalaProjects - toolProjects) {
     apply plugin: 'ch.tutteli.dokka'
     apply plugin: 'ch.tutteli.kotlin.module.info'
 
     dokka {
         logging.setLevel(LogLevel.QUIET)
     }
-}
-configure(nonCommonAndJsProjects) {
     compileKotlin {
         kotlinOptions {
             languageVersion = '1.2'
@@ -216,7 +216,8 @@ configure(nonCommonAndJsProjects) {
             allWarningsAsErrors = false
         }
     }
-
+}
+configure(nonCommonAndJsProjects) {
     sourceCompatibility = 8
     targetCompatibility = 8
 }
@@ -238,7 +239,7 @@ configure(subprojects.findAll { it.name.endsWith('-kotlin_1_3-jvm') }) {
 
 def apiProjects = subprojects.findAll {
     it.name.startsWith("${rootProject.name}-api") &&
-        (it.name.endsWith("-jvm") ||
+        (it.name.endsWith("-jvm") || it.name.endsWith("-scala") ||
             (it.name.endsWith("-common") && (it.name.contains("api-fluent-") || it.name.contains("api-infix-")))
         )
 }
@@ -298,14 +299,20 @@ configure(jacocoMulti.jacocoProjects + getAndroidProjects()) {
         }
     }
 }
-
-configure(subprojects - toolProjects) {
+configure(subprojects - toolProjects - scalaProjects) {
     sourceSets {
         all {
             languageSettings {
                 useExperimentalAnnotation('kotlin.Experimental')
             }
         }
+    }
+}
+configure(scalaProjects) {
+    apply plugin: "scala"
+
+    dependencies{
+        implementation 'org.scala-lang:scala-library:2.13.2'
     }
 }
 
@@ -347,6 +354,7 @@ configure(bundleSmokeTests) {
         }
     }
 }
+
 
 import java.util.function.Function
 

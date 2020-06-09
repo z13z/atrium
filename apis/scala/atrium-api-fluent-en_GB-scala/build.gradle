@@ -1,0 +1,26 @@
+description = 'A fluent assertion function API in en_GB with a focus on code completion for Scala.'
+
+ext.jacoco_additional = [
+    prefixedProject('translations-en_GB-jvm'),
+    prefixedProject('domain-builders-jvm'),
+    prefixedProject('domain-robstoll-jvm'),
+    prefixedProject('domain-robstoll-lib-jvm'),
+    prefixedProject('core-robstoll-jvm'),
+    prefixedProject('core-robstoll-lib-jvm'),
+]
+
+dependencies {
+//    println("hello: ${prefixedProject('domain-builders-jvm').configurations.runtimeClasspath.collect{ it.path }}")
+    api prefixedProject('domain-builders-jvm')
+
+    testImplementation prefixedProject('specs-jvm')
+}
+
+// necessary as
+compileKotlin.dependsOn(
+    prefixedProject('core-api-jvm').compileKotlin,
+    prefixedProject('core-robstoll-jvm').compileKotlin,
+    prefixedProject('core-robstoll-jvm').processResources,
+    prefixedProject('domain-robstoll-jvm').compileKotlin,
+    prefixedProject('domain-robstoll-jvm').processResources
+)
